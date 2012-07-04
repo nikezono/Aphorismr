@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<form action= "{{ url_for('add_entry') }}" method=post class=add-entry>
+<dl>
+<dt><h2>Aphorism:</h2>
+<dd><textarea rows=2 cols=50  name=text></textarea>
+<dt><h2>Author:</h2>
+<dd><input type=text name =author size=30>
+<dd><input type=submit value=Submit>
+</dl>
+</form>
+<ul class=entries>
+{% for entry in entries %}
+<li><em>{{entry.text}}</em>
+<h4> ー{{entry.author}}</h4>
+<form action = "{{ url_for('delete_entry', text=entry.text,author=entry.author)}}" method=post align=right>
+<input type=submit Value=Delete >
+</form>
+{% else %}
+<li><em>No entries here so far</em>
+{% endfor %}
+</ul>
+{% endblock %}
+
