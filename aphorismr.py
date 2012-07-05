@@ -59,15 +59,15 @@ def teardown_request(exception):
 
 @app.route('/')
 def show_entries():
-    cur = g.db.execute('select text, author from entries order by id desc')
-    entries = [dict(text=row[0], author=row[1]) for row in cur.fetchall()]
+    cur = g.db.execute('select text, author, category from entries order by id desc')
+    entries = [dict(text=row[0], author=row[1], category=row[2]) for row in cur.fetchall()]
     return render_template('show_entries.html', entries=entries)
 
 
 @app.route('/add', methods=['POST'])
 def add_entry():
-    g.db.execute('insert into entries (text, author) values (?, ?)',
-                 [request.form['text'], request.form['author']])
+    g.db.execute('insert into entries (text, author,category) values (?, ?, ?)',
+                 [request.form['text'], request.form['author'],request.form['category']])
     g.db.commit()
     flash('New')
     return redirect(url_for('show_entries'))
