@@ -20,7 +20,9 @@ from __future__ import with_statement
 from sqlite3 import dbapi2 as sqlite3
 from contextlib import closing
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-     render_template, flash , Markup
+     render_template, flash , Markup , jsonify
+import json
+import random
 
 # configuration
 DATABASE = 'aphorismr.db'
@@ -79,6 +81,13 @@ def delete_entry():
     g.db.commit()
     flash('Deleted')
     return redirect(url_for('show_entries'))
+
+@app.route('/rand')
+def random_api():
+    cur = g.db.execute('select text, author from entries order by id desc')
+    entries = [dict(text=row[0],author=row[1])for row in cur.fetchall()]
+    entry = entries[random.randint(0,len(entries)-1)]
+    return jsonify(text = entry.pop('text'), author=entry.pop('author'))
 
 if __name__ == '__main__':
     app.run()
